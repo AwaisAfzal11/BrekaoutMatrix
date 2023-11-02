@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Forex Analysis Form</title>
+</head>
+<body>
+    <h1>Forex Analysis Form</h1>
+    <form id="forexForm">
+        <label for="symbol">Symbol:</label>
+        <input type="text" id="symbol" name="symbol" required><br><br>
+
+        <label for="screener">Screener:</label>
+        <input type="text" id="screener" name="screener" required><br><br>
+
+        <label for="exchange">Exchange:</label>
+        <input type="text" id="exchange" name="exchange" required><br><br>
+
+        <input type="submit" value="Get Forex Analysis">
+    </form>
+
+    <div id="analysisResult">
+        <!-- Analysis result will be displayed here -->
+    </div>
+
+    <script>
+        const forexForm = document.getElementById('forexForm');
+        const analysisResult = document.getElementById('analysisResult');
+
+        forexForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const symbol = document.getElementById('symbol').value;
+            const screener = document.getElementById('screener').value;
+            const exchange = document.getElementById('exchange').value;
+
+            const response = await fetch('/getforex/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ symbol, screener, exchange }),
+            });
+
+            if (response.ok) {
+                const analysisData = await response.json();
+                // Display the analysis result on the page
+                analysisResult.innerHTML = `<h2>Forex Analysis Result</h2><pre>${JSON.stringify(analysisData, null, 2)}</pre>`;
+            } else {
+                analysisResult.innerHTML = `<h2>Error</h2><p>Failed to retrieve Forex analysis data.</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
